@@ -377,6 +377,26 @@ export class DataService{
 		callback = callback[0] ? callback[0] : callback;
 		return callback['body'];
 	}
+	async listing_categories_list({product=[],cate_id=[]}={}){
+		if(cate_id.length){
+			let filter = []
+			cate_id.forEach(cate=>{
+			  product.forEach(pro=>{
+				if(pro.category && pro.category == cate.id){
+				  filter.push(pro);
+				}
+			  });
+			});
+			if(filter.length){
+			   filter = _.uniqBy(filter,"id");
+			}else{
+			   filter = product;
+			}
+			return(filter);
+		}else{
+		   return(product);
+		}
+	}
 
 	async product_categories_list({product=[],cate_id=[]}={}){
 		if(cate_id.length){
@@ -398,27 +418,48 @@ export class DataService{
 		 return(product);
 	   }
 	}
+	
+	funcWithOption(product){
+		let array = [];
+		let index = -1;
+		if(product.modifiers){
+			product.modifiers = JSON.parse(product.modifiers);
+			Object.keys(product.modifiers).forEach(function(key){
+					index = index +1;
+					array.push(Object.assign({},product.modifiers[key]));  
+					Object.keys(product.modifiers[key].variations).forEach(function(k){
+					if(array[index].variations instanceof Array){
+					}else{
+						array[index].variations = [];
+					}
+					array[index].variations.push(product.modifiers[key].variations[k]);
+					});
+			});
+			product.modifiers = array;
+		}
+		return product;
+	};
+
+	async listing_detail({id,load=true,offlineMode=true,withOption=false}):Promise<any>{
+		let option:Config;
+		option = {
+			table:table.listing_single_detail,
+			offlineMode,
+			options:new Options({ loading:load,lang:true,type:"object",table_path:id,method:"get",api:api.listing_single_id+"/"+id }),
+			filter:{
+				key:"id",
+				value:id,
+				object:true
+			}
+		}
+		let callback = await this.data_generate(option);
+		if(withOption){
+			callback = this.funcWithOption(callback);
+		}
+		return callback;
+	}
 	  
   	async product_detail({id,load=true,offlineMode=true,withOption=false}):Promise<any>{
-		let funcWithOption = (product)=>{
-			let array = [];
-            let index = -1;
-            product.modifiers = JSON.parse(product.modifiers);
-            Object.keys(product.modifiers).forEach(function(key){
-                index = index +1;
-                array.push(Object.assign({},product.modifiers[key]));  
-                Object.keys(product.modifiers[key].variations).forEach(function(k){
-                  if(array[index].variations instanceof Array){
-                  }else{
-                     array[index].variations = [];
-                  }
-                  array[index].variations.push(product.modifiers[key].variations[k]);
-                });
-            });
-			product.modifiers = array;
-			return product;
-		};
-
 		let option:Config;
 		option = {
 			table:table.product_single,
@@ -432,7 +473,7 @@ export class DataService{
 		}
 		let callback = await this.data_generate(option);
 		if(withOption){
-			callback = funcWithOption(callback);
+			callback = this.funcWithOption(callback);
 		}
 		return callback;
 	}

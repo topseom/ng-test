@@ -935,10 +935,11 @@ export class PoslProductService{
   }
 
 
+
   //Product Local
   product_categories_list({product=[],cate_id=[]}){
     return new Promise<any>((resolve,reject)=>{
-       this._data.product_categories_list({product,cate_id}).then(callback=>{
+       this._data.listing_categories_list({product,cate_id}).then(callback=>{
          if(callback){
           this.redux.changeProducts({ product_list:callback });
          }
