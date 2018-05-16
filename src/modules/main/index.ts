@@ -17,3 +17,5 @@ export { WidgetClock  } from './widget/clock';
 export { WidgetSite } from './widget/site';
 export { WidgetSitelist } from './widget/siteList';
 export { WidgetUserSetting } from './widget/userSetting';
+
+export { MenuErp } from '../../../config/menu-erp';

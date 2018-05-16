@@ -1,4 +1,4 @@
-export const Menu = [
+export const MenuErp = [
 	{ 
 		"id":1,
 		"title":"Pos",
