@@ -422,7 +422,7 @@ export class DataService{
 	funcWithOption(product){
 		let array = [];
 		let index = -1;
-		if(product.modifiers){
+		if(product && product.modifiers){
 			product.modifiers = JSON.parse(product.modifiers);
 			Object.keys(product.modifiers).forEach(function(key){
 					index = index +1;
