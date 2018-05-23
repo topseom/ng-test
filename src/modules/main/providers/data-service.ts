@@ -377,16 +377,36 @@ export class DataService{
 		callback = callback[0] ? callback[0] : callback;
 		return callback['body'];
 	}
-	async listing_categories_list({product=[],cate_id=[]}={}){
+	async listing_categories_list({product=[],cate_id=[],organ=false,userId="0",organId=""}={}){
 		if(cate_id.length){
-			let filter = []
-			cate_id.forEach(cate=>{
-			  product.forEach(pro=>{
-				if(pro.category && pro.category == cate.id){
-				  filter.push(pro);
+			let filter = [];
+			if(organ){
+				if(organId){
+					cate_id.forEach(cate=>{
+						product.forEach(pro=>{
+						  if(pro.category && pro.category == cate.id && pro.created_by == userId){
+							filter.push(pro);
+						  }
+						});
+					});
+				}else{
+					cate_id.forEach(cate=>{
+						product.forEach(pro=>{
+						  if(pro.category && pro.category == cate.id && pro.organ_id == organId){
+							filter.push(pro);
+						  }
+						});
+					});
 				}
-			  });
-			});
+			}else{
+				cate_id.forEach(cate=>{
+					product.forEach(pro=>{
+					  if(pro.category && pro.category == cate.id){
+						filter.push(pro);
+					  }
+					});
+				});
+			}
 			if(filter.length){
 			   filter = _.uniqBy(filter,"id");
 			}else{
@@ -725,27 +745,67 @@ export class DataService{
 		return callback;
 	}
 
-  async listing_list({id,load=true,offlineMode=true,limit=0,page=0}):Promise<any>{
+  async listing_list({id,load=true,offlineMode=true,limit=0,page=0,organ=false,userId="0",organId=""}):Promise<any>{
 		let option:Config;
-		option = {
-			table:table.listing_single,
-			offlineMode,
-			options:new Options({ lang:true,limit,page,loading:load,where:[{key:"category",value:id}],method:"get",api:api.listing_list_category+"/"+id }),
-			filter:{
-				key:"category",
-				value:id
+		if(organ){
+			if(organId){
+				option = {
+					table:table.listing_single,
+					offlineMode,
+					options:new Options({ lang:true,limit,page,loading:load,where:[{key:'organ_id',value:organId},{key:"category",value:id}],method:"get",api:api.listing_list_category+"/"+id }),
+					filter:{
+						key:"category",
+						value:id
+					}
+				}
+			}else{
+				option = {
+					table:table.listing_single,
+					offlineMode,
+					options:new Options({ lang:true,limit,page,loading:load,where:[{key:'created_by',value:userId},{key:"category",value:id}],method:"get",api:api.listing_list_category+"/"+id }),
+					filter:{
+						key:"category",
+						value:id
+					}
+				}
+			}
+		}else{
+			option = {
+				table:table.listing_single,
+				offlineMode,
+				options:new Options({ lang:true,limit,page,loading:load,where:[{key:"category",value:id}],method:"get",api:api.listing_list_category+"/"+id }),
+				filter:{
+					key:"category",
+					value:id
+				}
 			}
 		}
 		let callback = await this.data_generate(option);
 		return callback;
 	}
 
-  async listing_listAll({load=true,offlineMode=true,limit=0,page=0}={}):Promise<any>{
+  async listing_listAll({load=true,offlineMode=true,limit=0,page=0,organ=false,userId="0",organId=""}={}):Promise<any>{
 		let option:Config;
-		option = {
-			table:table.listing_single,
-			offlineMode,
-			options:new Options({ lang:true,page,limit,loading:load,method:"get",api:api.listing_single })
+		if(organ){
+			if(organId){
+				option = {
+					table:table.listing_single,
+					offlineMode,
+					options:new Options({ where:[{key:'organ_id',value:organId}],lang:true,page,limit,loading:load,method:"get",api:api.listing_single })
+				}
+			}else{
+				option = {
+					table:table.listing_single,
+					offlineMode,
+					options:new Options({ where:[{key:'created_by',value:userId}],lang:true,page,limit,loading:load,method:"get",api:api.listing_single })
+				}
+			}
+		}else{
+			option = {
+				table:table.listing_single,
+				offlineMode,
+				options:new Options({ lang:true,page,limit,loading:load,method:"get",api:api.listing_single })
+			}
 		}
 		let callback = await this.data_generate(option);
 		return callback;

@@ -97,13 +97,16 @@ export class PoslProductService{
     });
   }
   
-  productStore(){
+   productStore(){
     return new Promise<any>((resolve,reject)=>{
-      this._data.listing_listAll({}).then(items=>{
-        //console.log("LISTING LISTTT!",items);
-        this.redux.changeProducts({ product_list: items,temp: items});
-        resolve(items);
+      this._auth.getUser().then(user=>{
+        this._data.listing_listAll({organ:true,userId:user.id,organId:user.organ_id}).then(items=>{
+          //console.log("LISTING LISTTT!",items);
+          this.redux.changeProducts({ product_list: items,temp: items});
+          resolve(items);
+        });
       });
+      
       // this._data.product_listAll({}).then(items=>{
       //   this.getStore().then(store=>{
       //     if(store){
