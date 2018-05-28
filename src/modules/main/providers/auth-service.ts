@@ -233,7 +233,7 @@ export class AuthService {
     return Promise.reject({message:this.textAlertFillDomain});
   }
 
-  async login(user,password,permissions=[]){
+  async login(user,password,permissions=[],db=""){
     if(user && password){
       let hash = sha1(user);
       let callback;

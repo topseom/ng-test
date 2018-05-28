@@ -872,7 +872,22 @@ export class DataService{
 		let callback = await this.data_generate(option);
 		return callback;
 	}
-   async users_group({load=true,offlineMode=true}={}):Promise<any>{
+	async order_user({user,type="",load=true,offlineMode=true}):Promise<any>{
+		let option:Config;
+		let where = [{key:"created_id",value:user.id}];
+		if(type){
+			where.push({key:'type',value:type});
+		}
+		option = {
+			table:table.order_single,
+			offlineMode,
+			options:new Options({ loading:load,where })
+		}
+		let callback = await this.data_generate(option);
+		return callback;
+	}
+	   
+	async users_group({load=true,offlineMode=true}={}):Promise<any>{
 		let option:Config;
 		option = {
 			table:table.users_group,
@@ -915,7 +930,8 @@ export class DataService{
 				loading:load,
 				database:dbMysql,
 				data:{ ref },
-				type:"post",
+				where:[{key:'name',value:ref}],
+				method:"post",
 				api:api.site_single
 			})
 		}
@@ -932,7 +948,8 @@ export class DataService{
 				loading:load,
 				database:dbMysql,
 				data:{ domain },
-				type:"post",
+				where:[{key:'domain',value:domain}],
+				method:"post",
 				api:api.site_single
 			})
 		}

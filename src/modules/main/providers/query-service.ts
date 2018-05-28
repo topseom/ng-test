@@ -403,6 +403,7 @@ export class QueryService {
         return Promise.reject({message:e,status:400});
       }
     }
+    await loader.dismiss();
     return Promise.reject({message:"not found method api json to get data!",status:404});
   }
 

@@ -109,12 +109,18 @@ export class SiteService{
           let loader = this.loadingCrtl.create();
           loader.setContent(this.textLoadingSiteRef);
           loader.present();
-          
-          let ref = await this._data.site_ref({ref:site});
-          if(ref){
-            await setCacheSiteWeb(site);
-            return site;
+          try{
+            let ref = await this._data.site_ref({ref:site});
+            if(ref){
+              await setCacheSiteWeb(site);
+              await loader.dismiss();
+              return site;
+            }
+          }catch(err){
+            await loader.dismiss();
+            return 0;
           }
+          
           /*let ref = firebase.database().ref().child("SITE/ref_list/"+site);
           let snapshot = await ref.once('value');
           await loader.dismiss();
@@ -123,6 +129,7 @@ export class SiteService{
             return site;
           }*/
         }
+        
         return 0;
     }
 
@@ -177,24 +184,41 @@ export class SiteService{
     }
 
     let getSiteUrl = async() =>{
-        let name = "site";
-        let url = location.href;
-        name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
-        var regexS = "[\\?&,]"+name+"=([^&,#]*)";
-        var regex = new RegExp( regexS );
-        var results = regex.exec( url );
-        let site = await getCacheSiteWeb(results == null ? null : results[1]);
+        let result = await getRequest("site");
+        let site = await getCacheSiteWeb(result);
         if(site){
           return site;
         }
-        let callback = await authSite(results == null ? null : results[1]);
+        let callback = await authSite(result);
         return callback;
+    }
+
+    let accessUser = async()=>{
+        let email = await getRequest('email');
+        let password = await getRequest('password');
+        if(email && password){
+          await this._auth.login(email,password);
+          return 1;
+        }
+        return 0;
+    }
+
+    let getRequest = async(name)=>{
+      let url = location.href;
+      name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+      var regexS = "[\\?&,]"+name+"=([^&,#]*)";
+      var regex = new RegExp( regexS );
+      var results = regex.exec( url );
+      return results?results[1]:null;
     }
 
     let app = await this.getConfigApp();
     app = app.platform;
     if(app == "web"){
       let site = await getSiteUrl();
+      if(config.user){
+        await accessUser();
+      }
       if(site){
         let callback = await returnRoot(site);
         return callback;
