@@ -33,6 +33,9 @@ export const api = {
     portfolio_single:"json_portfolio_single",
     order_gateway:"json_gateway",
     order_address_user:"json_address_user",
+    listing_address_user:"json_listing_address_user",
+    listing_gateway:"json_listing_gateway",
+    listing_shipping:"json_listing_shipping",
     users_single:"json_users",
     user_login:"json_login",
     app_setting:"json_app_setting",
@@ -43,7 +46,8 @@ export const api = {
     order_single_insert:"json_order_single",
     order_address_insert:"json_order_address",
     order_address_delete:"json_order_address",
-    order_address_update:"json_order_address"
+    order_address_update:"json_order_address",
+    listing_address:"json_listing_address"
 }
 export const table = {
     banner_single:"banner_single",
@@ -65,6 +69,10 @@ export const table = {
     listing_single:"listing_single",
     listing_single_detail:"listing_single_detail",
     listing_category:"listing_category",
+    listing_address:"listing_address",
+    listing_gateway:"listing_gateway",
+    listing_shipping:"listing_shipping",
+    listing_order_single:"listing_order_single",
     order_single:"order_single",
     order_address:"order_address",
     order_gateway:"order_gateway",

@@ -107,6 +107,10 @@ export class InsertService{
 		return await this.query(table.order_single,new Options({ method:"post",api:api.order_address_update,data,database,loading:load }));
 	}
 
+	async listing_address({data,load=true,database=dbMysql}){
+		return await this.query(table.listing_address,new Options({ method:"post",api:api.listing_address,data,database,loading:load }));
+	}
+
 	async order_single({data,type,load=true,database=dbMysql}){
 		return await this.query(table.order_single,new Options({ method:"post",api:api.order_single_insert,data:{type,...data},database,loading:load }));
 	}

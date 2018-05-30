@@ -72,6 +72,10 @@ export class DeleteService{
 		return await this.query(table.order_address,new Options({ method:"post",api:api.order_address_delete,data:{id},database:dbMysql,loading:load }));
 	}
 
+	async listing_address({id,load=true}){
+		return await this.query(table.listing_address,new Options({ method:"post",api:api.listing_address,data:{id},database:dbMysql,loading:load }));
+	}
+
 	async listing_single({id,load=true}){
 		return await this.query(table.listing_single,new Options({ method:"post",api:api.listing_single,data:{id},database:dbMysql,loading:load }));
 	}

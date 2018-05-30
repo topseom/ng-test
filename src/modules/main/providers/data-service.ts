@@ -840,12 +840,38 @@ export class DataService{
 		return callback;
 	}
 
+	async listing_address({id,load=true,offlineMode=true}):Promise<any>{
+		let option:Config;
+		option = {
+			table:table.listing_address,
+			offlineMode,
+			options:new Options({ loading:load,where:[{key:"created_by",value:id}],method:"get",api:api.listing_address_user+"/"+id }),
+			filter:{
+				key:"created_by",
+				value:id
+			}
+		}
+		let callback = await this.data_generate(option);
+		return callback;
+	}
+
   async order_gateway({load=true,offlineMode=true}={}):Promise<any>{
 		let option:Config;
 		option = {
 			table:table.order_gateway,
 			offlineMode,
 			options:new Options({ loading:load,method:"get",api:api.order_gateway })
+		}
+		let callback = await this.data_generate(option);
+		return callback;
+	}
+
+	async listing_gateway({load=true,offlineMode=true}={}):Promise<any>{
+		let option:Config;
+		option = {
+			table:table.listing_gateway,
+			offlineMode,
+			options:new Options({ loading:load,method:"get",api:api.listing_gateway })
 		}
 		let callback = await this.data_generate(option);
 		return callback;
@@ -862,7 +888,18 @@ export class DataService{
 		return callback;
 	}
 
-  async order_single({load=true,offlineMode=true}={}):Promise<any>{
+	async listing_shipping({load=true,offlineMode=true}={}):Promise<any>{
+		let option:Config;
+		option = {
+			table:table.listing_shipping,
+			offlineMode,
+			options:new Options({ loading:load,method:"get",api:table.order_shipping })
+		}
+		let callback = await this.data_generate(option);
+		return callback;
+	}
+
+  	async order_single({load=true,offlineMode=true}={}):Promise<any>{
 		let option:Config;
 		option = {
 			table:table.order_single,
@@ -872,6 +909,33 @@ export class DataService{
 		let callback = await this.data_generate(option);
 		return callback;
 	}
+
+	async listing_order_single({load=true,offlineMode=true}={}):Promise<any>{
+		let option:Config;
+		option = {
+			table:table.listing_order_single,
+			offlineMode,
+			options:new Options({ loading:load })
+		}
+		let callback = await this.data_generate(option);
+		return callback;
+	}
+
+	async listing_order_user({user,type="",load=true,offlineMode=true}):Promise<any>{
+		let option:Config;
+		let where = [{key:"created_id",value:user.id}];
+		if(type){
+			where.push({key:'type',value:type});
+		}
+		option = {
+			table:table.listing_order_single,
+			offlineMode,
+			options:new Options({ loading:load,where })
+		}
+		let callback = await this.data_generate(option);
+		return callback;
+	}
+
 	async order_user({user,type="",load=true,offlineMode=true}):Promise<any>{
 		let option:Config;
 		let where = [{key:"created_id",value:user.id}];
