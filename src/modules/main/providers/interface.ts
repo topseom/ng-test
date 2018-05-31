@@ -47,7 +47,8 @@ export const api = {
     order_address_insert:"json_order_address",
     order_address_delete:"json_order_address",
     order_address_update:"json_order_address",
-    listing_address:"json_listing_address"
+    listing_address:"json_listing_address",
+    listing_order_single:"json_listing_order_single"
 }
 export const table = {
     banner_single:"banner_single",
